@@ -1,0 +1,29 @@
+﻿<Window x:Class="WpfAsyncDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAsyncDemo"
+        mc:Ignorable="d"
+        Title="Simple Sync/Async Demo" Height="650" Width="825" FontSize="18">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="1" FontSize="30" HorizontalAlignment="Center">
+            Simple Sync/Async Demo
+        </TextBlock>
+        
+        <Button x:Name="executeSync" Click="executeSync_Click" Grid.Row="2" Padding="15" Margin="15 5 15 15" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Normal Execute"></Button>
+        <Button x:Name="executeAsync" Click="executeAsync_Click" Grid.Row="3" Padding="15"  Margin="15 -5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Async Execute"></Button>
+        <Button x:Name="executeParallelAsync" Click="executeParallelAsync_Click" Grid.Row="4" Padding="15"  Margin="15 5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Parallel Async Execute"></Button>
+        <TextBlock x:Name="resultsWindow" Grid.Row="7" Margin="10 5"></TextBlock>
+    </Grid>
+</Window>
