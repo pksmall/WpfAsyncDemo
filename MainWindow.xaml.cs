@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,15 +22,19 @@ namespace WpfAsyncDemo
     /// </summary>
     public partial class MainWindow : Window
     {
+        CancellationTokenSource cts = new CancellationTokenSource();
+
         public MainWindow()
         {
             InitializeComponent();
         }
+
         private void executeSync_Click(object sender, RoutedEventArgs e)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            RunDownloadSync();
+            var results = DemoMethods.RunDownloadSync();
+            PrintResults(results);
 
             watch.Stop();
             var elepsedMs = watch.ElapsedMilliseconds;
@@ -38,21 +43,38 @@ namespace WpfAsyncDemo
         }
         private async void executeAsync_Click(object sender, RoutedEventArgs e)
         {
+            Progress<ProgressReportModel> progress = new Progress<ProgressReportModel>();
+            progress.ProgressChanged += ReportProgress;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            await RunDownloadAsync();
+            try
+            {
+                var results = await DemoMethods.RunDownloadAsync(progress, cts.Token);
+                PrintResults(results);
+            }
+            catch (OperationCanceledException)
+            {
+                resultsWindow.Text += $"The async download was cancel. { Environment.NewLine}";
+            }
 
             watch.Stop();
             var elepsedMs = watch.ElapsedMilliseconds;
 
             resultsWindow.Text += $"Total execute time: {elepsedMs} {Environment.NewLine}";
+        }
+
+        private void ReportProgress(object sender, ProgressReportModel e)
+        {
+            dashboardProgress.Value = e.PercantageComplete;
+            PrintResults(e.SitesDownloaded);
         }
 
         private async void executeParallelAsync_Click(object sender, RoutedEventArgs e)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            await RunDownloadParallelAsync();
+            var results = await DemoMethods.RunDownloadParallelAsync();
+            PrintResults(results);
 
             watch.Stop();
             var elepsedMs = watch.ElapsedMilliseconds;
@@ -60,95 +82,12 @@ namespace WpfAsyncDemo
             resultsWindow.Text += $"Total execute time: {elepsedMs} {Environment.NewLine}";
         }
 
-        private List<string> PrepData() 
-        {
-            List<string> output = new List<string>();
-
-            resultsWindow.Text = "";
-
-            output.Add("https://www.yahoo.com");
-            output.Add("https://www.google.com");
-            output.Add("https://www.microsoft.com");
-            output.Add("http://www.cnn.com");
-            output.Add("http://www.codeproject.com");
-            output.Add("http://www.stackoverflow.com");
-
-            return output;
-        }
-
-        private async Task RunDownloadAsync()
-        {
-            List<string> websites = PrepData();
-
-            foreach (string site in websites)
-            {
-                WebsiteDataModel result = await Task.Run(() => DownloadWebsite(site));
-                ReportWebsiteInfo(result);
-            }
-        }
-
-        private async Task RunDownloadParallelAsync()
-        {
-            List<string> websites = PrepData();
-            List<Task<WebsiteDataModel>> tasks = new List<Task<WebsiteDataModel>>();
-
-            foreach (string site in websites)
-            {
-                tasks.Add(DownloadWebsiteAsync(site));
-            }
-
-            var results = await Task.WhenAll(tasks);
-
-            foreach(var item in results)
-            {
-                ReportWebsiteInfo(item);
-            }
-        }
-
-        private void RunDownloadSync() 
-        {
-            List<string> websites = PrepData();
-
-            foreach(string site in websites)
-            {
-                WebsiteDataModel result = DownloadWebsite(site);
-                ReportWebsiteInfo(result);
-            }
-        }
-
-        private WebsiteDataModel DownloadWebsite(string websiteURL)
-        {
-            WebsiteDataModel output = new WebsiteDataModel();
-            WebClient client = new WebClient();
-
-            output.WebsiteURL = websiteURL;
-            output.WebsiteData = client.DownloadString(websiteURL);
-
-            return output;            
-        }
-
-        private async Task<WebsiteDataModel> DownloadWebsiteAsync(string websiteURL)
-        {
-            WebsiteDataModel output = new WebsiteDataModel();
-            WebClient client = new WebClient();
-
-            output.WebsiteURL = websiteURL;
-            output.WebsiteData = await client.DownloadStringTaskAsync(websiteURL);
-
-            return output;
-        }
-
         private void cancelOperation_Click(object sender, RoutedEventArgs e) 
         {
-            
+            cts.Cancel();            
         }
 
-        private void ReportWebsiteInfo(WebsiteDataModel data)
-        {
-            resultsWindow.Text += $"{ data.WebsiteURL } downloaded { data.WebsiteData.Length } characters long.{ Environment.NewLine }";
-        }
-        
-        private void PrintResult(List<WebsiteDataModel> results)
+        private void PrintResults(List<WebsiteDataModel> results)
         {
             resultsWindow.Text = "";
 

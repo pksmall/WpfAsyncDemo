@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfAsyncDemo"
         mc:Ignorable="d"
-        Title="Simple Sync/Async Demo" Height="650" Width="825" FontSize="18">
+        Title="Simple Sync/Async Demo" Height="725" Width="825" FontSize="18">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -14,16 +14,16 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="1" FontSize="30" HorizontalAlignment="Center">
+        <TextBlock Grid.Row="0" FontSize="30" HorizontalAlignment="Center">
             Simple Sync/Async Demo
         </TextBlock>
-        
-        <Button x:Name="executeSync" Click="executeSync_Click" Grid.Row="2" Padding="15" Margin="15 5 15 15" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Normal Execute"></Button>
-        <Button x:Name="executeAsync" Click="executeAsync_Click" Grid.Row="3" Padding="15"  Margin="15 -5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Async Execute"></Button>
-        <Button x:Name="executeParallelAsync" Click="executeParallelAsync_Click" Grid.Row="4" Padding="15"  Margin="15 5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press" Content="Parallel Async Execute"></Button>
-        <TextBlock x:Name="resultsWindow" Grid.Row="7" Margin="10 5"></TextBlock>
+        <Button x:Name="executeSync" Click="executeSync_Click" Grid.Row="1" Padding="15" Margin="15 5 15 15" BorderBrush="Black" BorderThickness="1" ClickMode="Press">Normal Execute</Button>
+        <Button x:Name="executeAsync" Click="executeAsync_Click" Grid.Row="2" Padding="15"  Margin="15 -5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press">Async Execute</Button>
+        <Button x:Name="executeParallelAsync" Click="executeParallelAsync_Click" Grid.Row="3" Padding="15"  Margin="15 5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press">Parallel Async Execute</Button>
+        <Button x:Name="cancelOperation" Click="cancelOperation_Click" Grid.Row="4" Padding="15"  Margin="15 5 15 5" BorderBrush="Black" BorderThickness="1" ClickMode="Press">Cancel Operation</Button>
+        <ProgressBar x:Name="dashboardProgress" Value="0" Height="30" Margin="15" Grid.Row="5"></ProgressBar>
+        <TextBlock x:Name="resultsWindow" Grid.Row="6" Margin="10 5"></TextBlock>
     </Grid>
 </Window>

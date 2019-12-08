@@ -1,6 +1,6 @@
 ﻿namespace WpfAsyncDemo
 {
-    internal class WebsiteDataModel
+    public class WebsiteDataModel
     {
         public WebsiteDataModel()
         {
